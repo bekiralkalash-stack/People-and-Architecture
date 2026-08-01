@@ -1,0 +1,14 @@
+{
+  "name": "العمارة والناس | Architecture & People",
+  "short_name": "العمارة والناس",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#eaf5ff",
+  "theme_color": "#062e5f",
+  "icons": [
+    {"src":"assets/app-icon.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"assets/app-icon.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
