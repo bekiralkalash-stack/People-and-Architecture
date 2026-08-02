@@ -1,0 +1,8 @@
+{
+  "name": "architecture-people-platform",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@netlify/database": "^0.10.1"
+  }
+}
