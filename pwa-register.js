@@ -1,7 +1,16 @@
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
 
 const configureBackNavigation=()=>{
-  document.querySelectorAll('.global-back-nav').forEach(link=>{
+  let links=[...document.querySelectorAll('.global-back-nav')];
+  if(!links.length){
+    const link=document.createElement('a');
+    link.className='global-back-nav';
+    link.href='navigation.html';
+    link.style.cssText='position:fixed;z-index:9999;bottom:16px;left:16px;background:#062e5f;color:#fff;border:2px solid #fff;border-radius:24px;padding:9px 14px;text-decoration:none;font-family:Tajawal,Tahoma,Arial;font-weight:700;box-shadow:0 5px 16px #062e5f66';
+    document.body.append(link);
+    links=[link];
+  }
+  links.forEach(link=>{
     link.textContent='↩ رجوع';
     link.setAttribute('aria-label','رجوع إلى الصفحة السابقة');
     link.title='رجوع إلى الصفحة السابقة';
