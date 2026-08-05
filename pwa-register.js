@@ -1,5 +1,22 @@
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
 
+const configureBackNavigation=()=>{
+  document.querySelectorAll('.global-back-nav').forEach(link=>{
+    link.textContent='↩ رجوع';
+    link.setAttribute('aria-label','رجوع إلى الصفحة السابقة');
+    link.title='رجوع إلى الصفحة السابقة';
+    link.addEventListener('click',event=>{
+      if(history.length>1){
+        event.preventDefault();
+        history.back();
+      }
+    });
+  });
+};
+
+if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',configureBackNavigation);
+else configureBackNavigation();
+
 // A single entry point for the imported Flutter app's non-duplicated features.
 // It is added only to the global platform hero, so existing sections are not repeated.
 const mountPlatformExtras=()=>{
@@ -35,5 +52,3 @@ const mountPlatformExtras=()=>{
 if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',mountPlatformExtras);
 else mountPlatformExtras();
 
-
-;
