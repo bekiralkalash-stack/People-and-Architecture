@@ -35,4 +35,5 @@ const mountPlatformExtras=()=>{
 if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',mountPlatformExtras);
 else mountPlatformExtras();
 
-\n// platform counter mount\n
+
+;
