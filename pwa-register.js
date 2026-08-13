@@ -26,28 +26,16 @@ const configureBackNavigation=()=>{
 if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',configureBackNavigation);
 else configureBackNavigation();
 
-// Shared site-wide visitor counter. CounterAPI stores one total for the public GitHub Pages site.
+// Shared site-wide visitor counter. The public badge service keeps one total for all site pages.
 const mountVisitorCounter=()=>{
   if(document.querySelector('[data-visitor-counter]'))return;
   const counter=document.createElement('div');
   counter.className='global-visitor-counter';
   counter.dataset.visitorCounter='true';
   counter.setAttribute('aria-live','polite');
-  counter.innerHTML='<span aria-hidden="true">👥</span><span>زوار المنصة</span><strong>…</strong>';
-  const number=counter.querySelector('strong');
-  const endpoint='https://api.counterapi.dev/v1/architecture-people-github-pages-bekir-2026/site-visits';
-  const showCount=data=>{
-    const value=Number(data?.value??data?.count);
-    if(Number.isFinite(value)) number.textContent=new Intl.NumberFormat('ar').format(value);
-  };
-  const readCount=()=>fetch(endpoint,{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(showCount);
-  fetch(`${endpoint}/up`,{cache:'no-store'})
-    .then(response=>response.ok?response.json():Promise.reject())
-    .then(showCount)
-    .catch(()=>{number.textContent='—';counter.title='يتعذر الاتصال بخدمة العداد مؤقتاً.';});
-  window.setInterval(()=>readCount().catch(()=>{}),30000);
+  counter.innerHTML='<span aria-hidden="true">👥</span><span>زوار المنصة</span><img src="https://visitor-badge.laobi.icu/badge?page_id=bekiralkalash-stack.People-and-Architecture" alt="العدد العالمي للزوار" referrerpolicy="no-referrer">';
   const style=document.createElement('style');
-  style.textContent='.global-visitor-counter{position:fixed;z-index:10000;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid #8fc4ef;border-radius:22px;background:linear-gradient(135deg,#fff,#e5f4ff);color:#062e5f;font:800 14px Tajawal,Tahoma,Arial;white-space:nowrap;box-shadow:0 5px 16px #0874df2b}.global-visitor-counter strong{font-size:17px;color:#075cb7}@media(max-width:600px){.global-visitor-counter{top:8px;font-size:13px;padding:7px 11px}}';
+  style.textContent='.global-visitor-counter{position:fixed;z-index:10000;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid #8fc4ef;border-radius:22px;background:linear-gradient(135deg,#fff,#e5f4ff);color:#062e5f;font:800 14px Tajawal,Tahoma,Arial;white-space:nowrap;box-shadow:0 5px 16px #0874df2b}.global-visitor-counter img{height:20px;max-width:125px}@media(max-width:600px){.global-visitor-counter{top:8px;font-size:13px;padding:7px 11px}.global-visitor-counter img{height:18px;max-width:110px}}';
   document.head.append(style);
   document.body.append(counter);
 };
