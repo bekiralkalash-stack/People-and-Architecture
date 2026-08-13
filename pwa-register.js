@@ -26,36 +26,39 @@ const configureBackNavigation=()=>{
 if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',configureBackNavigation);
 else configureBackNavigation();
 
+// Shared site-wide visitor counter. CounterAPI stores one total for the public GitHub Pages site.
+const mountVisitorCounter=()=>{
+  if(document.querySelector('[data-visitor-counter]'))return;
+  const counter=document.createElement('div');
+  counter.className='global-visitor-counter';
+  counter.dataset.visitorCounter='true';
+  counter.setAttribute('aria-live','polite');
+  counter.innerHTML='<span aria-hidden="true">👥</span><span>زوار المنصة</span><strong>…</strong>';
+  const number=counter.querySelector('strong');
+  const endpoint='https://api.counterapi.dev/v1/architecture-people-github-pages-bekir-2026/site-visits';
+  const showCount=data=>{
+    const value=Number(data?.value??data?.count);
+    if(Number.isFinite(value)) number.textContent=new Intl.NumberFormat('ar').format(value);
+  };
+  const readCount=()=>fetch(endpoint,{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(showCount);
+  fetch(`${endpoint}/up`,{cache:'no-store'})
+    .then(response=>response.ok?response.json():Promise.reject())
+    .then(showCount)
+    .catch(()=>{number.textContent='—';counter.title='يتعذر الاتصال بخدمة العداد مؤقتاً.';});
+  window.setInterval(()=>readCount().catch(()=>{}),30000);
+  const style=document.createElement('style');
+  style.textContent='.global-visitor-counter{position:fixed;z-index:10000;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid #8fc4ef;border-radius:22px;background:linear-gradient(135deg,#fff,#e5f4ff);color:#062e5f;font:800 14px Tajawal,Tahoma,Arial;white-space:nowrap;box-shadow:0 5px 16px #0874df2b}.global-visitor-counter strong{font-size:17px;color:#075cb7}@media(max-width:600px){.global-visitor-counter{top:8px;font-size:13px;padding:7px 11px}}';
+  document.head.append(style);
+  document.body.append(counter);
+};
+
+if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',mountVisitorCounter);
+else mountVisitorCounter();
+
 // A single entry point for the imported Flutter app's non-duplicated features.
 // It is added only to the global platform hero, so existing sections are not repeated.
 const mountPlatformExtras=()=>{
   if(!/\/platform(?:\.html)?$/.test(location.pathname))return;
-  const top=document.querySelector('.top');
-  if(top&&!document.querySelector('[data-visitor-counter]')){
-    const counter=document.createElement('div');
-    counter.className='visitor-counter';
-    counter.dataset.visitorCounter='true';
-    counter.setAttribute('aria-live','polite');
-    counter.innerHTML='<span aria-hidden="true">👥</span><span>الزوار</span><strong>—</strong>';
-    const number=counter.querySelector('strong');
-    // GitHub Pages is static, so the live count is kept by a public counter service.
-    // Each successful page visit increases one shared, site-wide total.
-    fetch('https://api.counterapi.dev/v1/architecture-people-github-pages-bekir-2026/site-visits/up', {cache:'no-store'})
-      .then(response=>response.ok?response.json():Promise.reject())
-      .then(data=>{
-        const count=Number(data.value??data.count);
-        if(Number.isFinite(count))number.textContent=new Intl.NumberFormat('ar').format(count);
-        else throw new Error('Invalid counter response');
-      })
-      .catch(()=>{
-        number.textContent='—';
-        counter.title='تعذر الاتصال بخدمة العداد الآن؛ سيُعاد التحديث تلقائيًا عند الزيارة التالية.';
-      });
-    const style=document.createElement('style');
-    style.textContent='.top{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center}.top>.actions{justify-self:end}.visitor-counter{display:flex;align-items:center;gap:7px;justify-self:center;padding:7px 13px;border:1px solid #8fc4ef;border-radius:22px;background:linear-gradient(135deg,#fff,#e5f4ff);color:#062e5f;font-size:14px;font-weight:800;white-space:nowrap;box-shadow:0 5px 16px #0874df1f}.visitor-counter strong{font-size:17px;color:#075cb7}@media(max-width:760px){.top{grid-template-columns:1fr!important;justify-items:center}.top>.actions{justify-self:center}.brand{justify-self:center}.visitor-counter{order:-1}}';
-    document.head.append(style);
-    top.insertBefore(counter,top.children[1]||null);
-  }
   const actions=document.querySelector('.hero .actions');
   if(!actions||document.querySelector('[data-app-workspace]'))return;
   const link=document.createElement('a');
